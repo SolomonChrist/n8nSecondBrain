@@ -1,0 +1,5 @@
+record_id,record_type,title,content,status,priority,area,source,source_url,created_at,updated_at,due_at,next_action,owner,tags,confidence,review_at,archived
+memory-001,memory,Example stable fact,Replace this row with a durable fact about the user.,active,,personal,manual,,,2026-11-01,,You may delete this example row.,user,"example",0.5,,false
+action-001,action,Example next action,Replace this row with a concrete action.,open,medium,setup,manual,,,2026-11-01,,Review and replace this example.,user,"example",1.0,,false
+project-001,project,Example project,Replace this row with a project or area of responsibility.,active,medium,work,manual,,,2026-11-01,,Define the next milestone.,user,"example",0.8,,false
+reference-001,reference,Example source,Replace this row with a useful reference or source.,active,,knowledge,manual,https://example.com,,2026-11-01,,,user,"example",0.5,,false
