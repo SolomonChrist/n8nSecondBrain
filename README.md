@@ -37,6 +37,13 @@ Do not share or commit credentials, API keys, or private document IDs. Configure
 
 That is the complete initial setup. The Google Sheet serves as the memory and action layer for the workflows.
 
+### 3. Open the user profile as a Google Doc
+
+1. Open [`docs/user-profile.md`](docs/user-profile.md) from this repository.
+2. Copy its contents into a new Google Doc, or upload/open the Markdown file and save it as a Google Doc.
+3. Complete the profile with the user's information, goals, priorities, preferences, and approval boundaries.
+4. Keep the completed Google Doc available as the user's instruction and context document.
+
 ## Included files
 
 | File | Purpose |
@@ -44,7 +51,7 @@ That is the complete initial setup. The Google Sheet serves as the memory and ac
 | [`workflows/Second Brain - Chat Input.json`](workflows/Second%20Brain%20-%20Chat%20Input.json) | n8n workflow for sending input into the Second Brain |
 | [`workflows/Second Brain - Daily Report.json`](workflows/Second%20Brain%20-%20Daily%20Report.json) | n8n workflow for generating a daily report |
 | [`sheets/Second Brain - Inbox.xlsx`](sheets/Second%20Brain%20-%20Inbox.xlsx) | Spreadsheet to upload to Drive and convert into Google Sheets |
-| [`docs/user-profile.md`](docs/user-profile.md) | Optional profile document template for describing the user |
+| [`docs/user-profile.md`](docs/user-profile.md) | User profile to open or upload as a Google Doc |
 | [`sheets/second-brain-schema.csv`](sheets/second-brain-schema.csv) | Lightweight reference schema for the memory/action layer |
 
 ## 30-Day AI Second Brain Challenge
