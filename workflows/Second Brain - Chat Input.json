@@ -1,0 +1,2069 @@
+{
+  "updatedAt": "2026-10-30T19:01:15.347Z",
+  "createdAt": "2026-10-30T15:52:16.882Z",
+  "id": "FpH15ftEdbGeXqbE",
+  "name": "Second Brain - Chat",
+  "description": "Authenticated n8n chat. Saves notes, logs done items, runs approve A-n through the Draft Builder, and saves attached PDFs/images to Drive > Uploads with a Memory row. Never sends anything.",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "authentication": "n8nUserAuth",
+        "initialMessages": "Drop a note into your Second Brain.",
+        "options": {
+          "inputPlaceholder": "Type a note...",
+          "subtitle": "Capture a note",
+          "title": "Second Brain",
+          "responseMode": "lastNode"
+        }
+      },
+      "id": "ad7403a3-8a77-4ff8-8948-7d1c707591ca",
+      "name": "Chat Input",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        240,
+        304
+      ],
+      "webhookId": "b1309a34-136c-4376-bac6-9da2b3f4073e"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "n1",
+              "name": "note",
+              "type": "string",
+              "value": "={{ ($json.chatInput ?? \"\").toString().trim() }}"
+            },
+            {
+              "id": "n6",
+              "name": "id",
+              "type": "string",
+              "value": "=M-{{ $execution.id }}"
+            },
+            {
+              "id": "n2",
+              "name": "captured_at",
+              "type": "string",
+              "value": "={{ $now.setZone('America/Toronto').toFormat('yyyy-MM-dd HH:mm') }}"
+            },
+            {
+              "id": "n7",
+              "name": "type",
+              "type": "string",
+              "value": "note"
+            },
+            {
+              "id": "n8",
+              "name": "title",
+              "type": "string",
+              "value": "={{ (() => { const t = ($json.chatInput ?? '').toString().trim().replace(/\\s+/g, ' '); return t.length > 60 ? t.slice(0, 57).trimEnd() + '...' : t; })() }}"
+            },
+            {
+              "id": "n9",
+              "name": "status",
+              "type": "string",
+              "value": "new"
+            },
+            {
+              "id": "n10",
+              "name": "source",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "id": "n3",
+              "name": "user_email",
+              "type": "string",
+              "value": "={{ $json.user?.email ?? $json.metadata?.user?.email ?? \"\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2fe842bd-882c-47e1-85b4-4bb537907aba",
+      "name": "Normalize Note",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "v1",
+              "leftValue": "={{ $json.note }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              },
+              "rightValue": ""
+            },
+            {
+              "id": "v2",
+              "leftValue": "={{ $json.note.length }}",
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              },
+              "rightValue": 4000
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2ffd0201-24d2-418a-8600-e59aba5f776f",
+      "name": "Validate Note",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "cachedResultName": "Memory",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4/edit#gid=1001",
+          "mode": "list",
+          "value": 1001
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "schema": [
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "id",
+              "id": "id",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "captured_at",
+              "id": "captured_at",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "type",
+              "id": "type",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "title",
+              "id": "title",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "note",
+              "id": "note",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "person_or_project",
+              "id": "person_or_project",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "due_date",
+              "id": "due_date",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "status",
+              "id": "status",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "source",
+              "id": "source",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "file_url",
+              "id": "file_url",
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "last_updated",
+              "id": "last_updated",
+              "required": false,
+              "type": "string"
+            }
+          ],
+          "value": {
+            "captured_at": "={{ $json.captured_at }}",
+            "id": "={{ $json.id }}",
+            "note": "={{ $json.note }}",
+            "source": "={{ $json.source }}",
+            "status": "={{ $json.status }}",
+            "title": "={{ $json.title }}",
+            "type": "={{ $json.type }}"
+          }
+        },
+        "options": {
+          "cellFormat": "RAW"
+        }
+      },
+      "id": "24315354-8888-4d74-92e9-666b6c99ad38",
+      "name": "Append to Memory Tab",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        960,
+        208
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wC9aB0ESSX2aJIA3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r1",
+              "name": "output",
+              "value": "=✅ Saved to your Second Brain at {{ $(\"Normalize Note\").item.json.captured_at }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6f2e7586-d18e-4e50-b2a6-0781168f8d27",
+      "name": "Reply Saved",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1200,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "x1",
+              "name": "output",
+              "value": "⚠️ Not saved — the note was empty or over 4,000 characters.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0a6b9714-bd88-4cf5-87ef-d65c16018697",
+      "name": "Reply Rejected",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        960,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Second Brain – Stage 1\nAuthenticated chat → validate → append row → confirm.\nSheet: Second Brain – Inbox",
+        "height": 144,
+        "width": 336,
+        "color": 4
+      },
+      "id": "2edea217-0cc6-482c-b04e-a000a54d18b0",
+      "name": "Sticky Note 6d58b414",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        96,
+        96
+      ]
+    }
+  ],
+  "connections": {
+    "Chat Input": {
+      "main": [
+        [
+          {
+            "node": "Normalize Note",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Note": {
+      "main": [
+        [
+          {
+            "node": "Validate Note",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Note": {
+      "main": [
+        [
+          {
+            "node": "Append to Memory Tab",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reply Rejected",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append to Memory Tab": {
+      "main": [
+        [
+          {
+            "node": "Reply Saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": true,
+    "binaryMode": "separate",
+    "timezone": "America/Toronto"
+  },
+  "staticData": null,
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp"
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "d92474c1-a5bf-419a-a090-3398f3b9e27c",
+  "activeVersionId": "7ae5162d-b69f-4b58-a1eb-b95c3409b1f2",
+  "versionCounter": 11,
+  "triggerCount": 1,
+  "sourceWorkflowId": null,
+  "tags": [],
+  "parentFolder": null,
+  "activeVersion": {
+    "updatedAt": "2026-10-30T18:06:34.000Z",
+    "createdAt": "2026-10-30T18:01:05.799Z",
+    "versionId": "7ae5162d-b69f-4b58-a1eb-b95c3409b1f2",
+    "workflowId": "FpH15ftEdbGeXqbE",
+    "nodes": [
+      {
+        "parameters": {
+          "public": true,
+          "authentication": "n8nUserAuth",
+          "initialMessages": "Drop a note, say what's done, approve an action (e.g. approve A-2), or attach a PDF or photo.",
+          "options": {
+            "inputPlaceholder": "Type a note...",
+            "subtitle": "Capture a note",
+            "title": "Second Brain",
+            "responseMode": "lastNode",
+            "allowFileUploads": true,
+            "allowedFilesMimeTypes": "application/pdf,image/*"
+          }
+        },
+        "id": "ad7403a3-8a77-4ff8-8948-7d1c707591ca",
+        "name": "Chat Input",
+        "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+        "typeVersion": 1.5,
+        "position": [
+          240,
+          304
+        ],
+        "webhookId": "b1309a34-136c-4376-bac6-9da2b3f4073e"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "n1",
+                "name": "note",
+                "type": "string",
+                "value": "={{ ($json.chatInput ?? \"\").toString().trim() }}"
+              },
+              {
+                "id": "n6",
+                "name": "id",
+                "type": "string",
+                "value": "=M-{{ $execution.id }}"
+              },
+              {
+                "id": "n2",
+                "name": "captured_at",
+                "type": "string",
+                "value": "={{ $now.setZone('America/Toronto').toFormat('yyyy-MM-dd HH:mm') }}"
+              },
+              {
+                "id": "n7",
+                "name": "type",
+                "type": "string",
+                "value": "note"
+              },
+              {
+                "id": "n8",
+                "name": "title",
+                "type": "string",
+                "value": "={{ (() => { const t = ($json.chatInput ?? '').toString().trim().replace(/\\s+/g, ' '); return t.length > 60 ? t.slice(0, 57).trimEnd() + '...' : t; })() }}"
+              },
+              {
+                "id": "n9",
+                "name": "status",
+                "type": "string",
+                "value": "new"
+              },
+              {
+                "id": "n10",
+                "name": "source",
+                "type": "string",
+                "value": "chat"
+              },
+              {
+                "id": "n3",
+                "name": "user_email",
+                "type": "string",
+                "value": "={{ $json.user?.email ?? $json.metadata?.user?.email ?? \"\" }}"
+              },
+              {
+                "id": "n11",
+                "name": "file_count",
+                "type": "number",
+                "value": "={{ Object.keys($('Chat Input').item.binary || {}).length }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "2fe842bd-882c-47e1-85b4-4bb537907aba",
+        "name": "Normalize Note",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          480,
+          304
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose",
+              "version": 1
+            },
+            "conditions": [
+              {
+                "id": "v1",
+                "leftValue": "={{ ($json.note.length > 0 || $json.file_count > 0) && $json.note.length <= 4000 }}",
+                "operator": {
+                  "operation": "true",
+                  "singleValue": true,
+                  "type": "boolean"
+                },
+                "rightValue": ""
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "id": "2ffd0201-24d2-418a-8600-e59aba5f776f",
+        "name": "Validate Note",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          720,
+          304
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4",
+            "mode": "id"
+          },
+          "sheetName": {
+            "__rl": true,
+            "cachedResultName": "Memory",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4/edit#gid=1001",
+            "mode": "list",
+            "value": 1001
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "schema": [
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "id",
+                "id": "id",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "captured_at",
+                "id": "captured_at",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "type",
+                "id": "type",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "title",
+                "id": "title",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "note",
+                "id": "note",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "person_or_project",
+                "id": "person_or_project",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "due_date",
+                "id": "due_date",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "status",
+                "id": "status",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "source",
+                "id": "source",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "file_url",
+                "id": "file_url",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "file_type",
+                "id": "file_type",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "short_summary",
+                "id": "short_summary",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "extraction_status",
+                "id": "extraction_status",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "updated_at",
+                "id": "updated_at",
+                "required": false,
+                "type": "string"
+              }
+            ],
+            "value": {
+              "captured_at": "={{ $json.note_row.captured_at }}",
+              "due_date": "={{ $json.note_row.due_date }}",
+              "id": "={{ $json.note_row.id }}",
+              "note": "={{ $json.note_row.note }}",
+              "person_or_project": "={{ $json.note_row.person_or_project }}",
+              "source": "={{ $json.note_row.source }}",
+              "status": "={{ $json.note_row.status }}",
+              "title": "={{ $json.note_row.title }}",
+              "type": "={{ $json.note_row.type }}",
+              "updated_at": "={{ $json.note_row.captured_at }}"
+            }
+          },
+          "options": {
+            "cellFormat": "RAW"
+          }
+        },
+        "id": "24315354-8888-4d74-92e9-666b6c99ad38",
+        "name": "Append to Memory Tab",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          2280,
+          208
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "wC9aB0ESSX2aJIA3",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "x1",
+                "name": "output",
+                "value": "⚠️ Not saved — send some text or attach a file (notes up to 4,000 characters).",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "0a6b9714-bd88-4cf5-87ef-d65c16018697",
+        "name": "Reply Rejected",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          720,
+          520
+        ]
+      },
+      {
+        "parameters": {
+          "content": "## Second Brain - Chat\nAuthenticated chat -> Claude interprets each message -> saves new notes, logs done items (closes a row only when everything in it is done), runs \"approve A-n\" through the Draft Builder, and replies with links. Never sends anything.",
+          "height": 144,
+          "width": 336,
+          "color": 4
+        },
+        "id": "2edea217-0cc6-482c-b04e-a000a54d18b0",
+        "name": "Sticky Note 6d58b414",
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          96,
+          96
+        ]
+      },
+      {
+        "id": "a009125b-6227-4867-9dc9-89cb60258e00",
+        "name": "Read Memory Tab",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          960,
+          304
+        ],
+        "parameters": {
+          "authentication": "oAuth2",
+          "documentId": {
+            "__rl": true,
+            "cachedResultName": "Second Brain - Inbox",
+            "mode": "id",
+            "value": "1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4"
+          },
+          "operation": "read",
+          "options": {
+            "outputFormatting": {
+              "values": {
+                "date": "FORMATTED_STRING",
+                "general": "FORMATTED_VALUE"
+              }
+            }
+          },
+          "resource": "sheet",
+          "sheetName": {
+            "__rl": true,
+            "cachedResultName": "Memory",
+            "mode": "list",
+            "value": 1001
+          }
+        },
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "wC9aB0ESSX2aJIA3",
+            "name": "Google Sheets account"
+          }
+        },
+        "alwaysOutputData": true,
+        "executeOnce": true
+      },
+      {
+        "id": "04ca13bc-9885-4d23-baa4-c9d5620669d9",
+        "name": "Read Actions Tab",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          1180,
+          304
+        ],
+        "parameters": {
+          "authentication": "oAuth2",
+          "documentId": {
+            "__rl": true,
+            "cachedResultName": "Second Brain - Inbox",
+            "mode": "id",
+            "value": "1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4"
+          },
+          "operation": "read",
+          "options": {
+            "outputFormatting": {
+              "values": {
+                "date": "FORMATTED_STRING",
+                "general": "FORMATTED_VALUE"
+              }
+            }
+          },
+          "resource": "sheet",
+          "sheetName": {
+            "__rl": true,
+            "cachedResultName": "Actions",
+            "mode": "list",
+            "value": "1002"
+          }
+        },
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "wC9aB0ESSX2aJIA3",
+            "name": "Google Sheets account"
+          }
+        },
+        "alwaysOutputData": true,
+        "executeOnce": true
+      },
+      {
+        "id": "2fedb743-9f35-4107-b4ee-e8b8118ef19d",
+        "name": "Build Context",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1400,
+          304
+        ],
+        "parameters": {
+          "jsCode": "const zone = 'America/Toronto';\nconst now = DateTime.now().setZone(zone);\nconst clean = (v) => (v === undefined || v === null ? '' : String(v).trim());\nconst memory = $('Read Memory Tab').all().map(i => i.json).filter(r => r && clean(r.id) && clean(r.note));\nconst actions = $('Read Actions Tab').all().map(i => i.json).filter(r => r && clean(r.id));\nconst parse = (v) => { let d = DateTime.fromFormat(clean(v), 'yyyy-MM-dd HH:mm', { zone }); if (!d.isValid) d = DateTime.fromISO(clean(v), { zone }); return d.isValid ? d : null; };\nconst doneLog = memory.filter(r => clean(r.type).toLowerCase() === 'done');\nconst active = memory\n  .filter(r => clean(r.type).toLowerCase() !== 'done')\n  .filter(r => !['done', 'archived'].includes(clean(r.status).toLowerCase()))\n  .filter(r => { const d = parse(r.captured_at); return !d || d >= now.minus({ days: 30 }); });\nconst activeText = active.map(r => {\n  const id = clean(r.id);\n  const doneFor = doneLog.filter(d => clean(d.note).toUpperCase().includes(`[${id.toUpperCase()}]`)).map(d => `    already done: ${clean(d.note)}`);\n  return [`- ${id} (row ${clean(r.row_number)}, captured ${clean(r.captured_at)}): ${clean(r.note)}`, ...doneFor].join('\\n');\n}).join('\\n');\nconst openActions = actions.filter(a => clean(a.approval_status).toLowerCase() !== 'rejected');\nconst actionsText = openActions.map(a => `- ${clean(a.id)} [${clean(a.approval_status) || 'pending'}${clean(a.outcome).startsWith('http') ? ', draft already created' : ''}]: ${clean(a.proposed_action)}`).join('\\n');\nreturn [{ json: {\n  message: clean($('Normalize Note').first().json.note),\n  active_text: activeText || '(none)',\n  actions_text: actionsText || '(none)',\n  active_ids: active.map(r => clean(r.id).toUpperCase()),\n  open_action_ids: openActions.map(a => clean(a.id).toUpperCase())\n} }];\n",
+          "language": "javaScript",
+          "mode": "runOnceForAllItems"
+        }
+      },
+      {
+        "id": "91c30e46-1775-44b9-8482-c98aa6e89abf",
+        "name": "Interpret Message",
+        "type": "@n8n/n8n-nodes-langchain.chainLlm",
+        "typeVersion": 1.9,
+        "position": [
+          1620,
+          304
+        ],
+        "parameters": {
+          "hasOutputParser": true,
+          "messages": {
+            "messageValues": [
+              {
+                "message": "You read one chat message Solomon sends to his Second Brain and decide what it means. You only classify; you never perform actions or send anything.\n\nReturn:\n- save_note: true if the message contains new information worth keeping (a task, idea, commitment, fact). False if it only reports something done and/or approves actions.\n- note_text: only the new information, in his own words, lightly trimmed. Empty string if save_note is false.\n- note_title: at most 8 words summarising note_text. Empty if save_note is false.\n- person_or_project: a person or project explicitly named in the new information, else \"\".\n- due_date: YYYY-MM-DD only if the message states an explicit calendar date. Never convert weekdays or \"tomorrow\". Else \"\".\n- done_items: things he says are finished, completed, sent, handled or no longer needed. Match each to the ACTIVE ROW it belongs to (ref_id, e.g. M-8). item = the specific finished commitment in a few words. closes_whole_row = true only if, after this, every commitment in that row is finished, counting the row's \"already done\" lines. If you cannot match a finished item to a row confidently, leave it out.\n- approve_action_ids: action ids he approves (e.g. \"approve A-2\", \"go ahead with A-2\"). Only ids listed in EXISTING ACTIONS.\n\nNever invent row ids, action ids, people or dates.",
+                "type": "SystemMessagePromptTemplate"
+              }
+            ]
+          },
+          "promptType": "define",
+          "text": "=MESSAGE:\n{{ $json.message }}\n\nACTIVE ROWS:\n{{ $json.active_text }}\n\nEXISTING ACTIONS:\n{{ $json.actions_text }}"
+        },
+        "retryOnFail": true,
+        "maxTries": 3,
+        "waitBetweenTries": 2000
+      },
+      {
+        "id": "f51064e8-163f-493f-b344-0f4248b1c66f",
+        "name": "Claude Model",
+        "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+        "typeVersion": 1.6,
+        "position": [
+          1600,
+          520
+        ],
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "cachedResultName": "Claude Sonnet 5",
+            "mode": "list",
+            "value": "claude-sonnet-5"
+          },
+          "options": {
+            "maxTokensToSample": 4000
+          }
+        },
+        "credentials": {
+          "anthropicApi": {
+            "id": null,
+            "name": "Gateway credits",
+            "__aiGatewayManaged": true
+          }
+        }
+      },
+      {
+        "id": "c429c075-f6ca-4fc9-893a-eb32367d7fdd",
+        "name": "Message Format",
+        "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+        "typeVersion": 1.3,
+        "position": [
+          1760,
+          520
+        ],
+        "parameters": {
+          "inputSchema": "{\"type\": \"object\", \"properties\": {\"save_note\": {\"type\": \"boolean\"}, \"note_text\": {\"type\": \"string\"}, \"note_title\": {\"type\": \"string\"}, \"person_or_project\": {\"type\": \"string\"}, \"due_date\": {\"type\": \"string\"}, \"done_items\": {\"type\": \"array\", \"items\": {\"type\": \"object\", \"properties\": {\"ref_id\": {\"type\": \"string\"}, \"item\": {\"type\": \"string\"}, \"closes_whole_row\": {\"type\": \"boolean\"}}, \"required\": [\"ref_id\", \"item\", \"closes_whole_row\"]}}, \"approve_action_ids\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}}}, \"required\": [\"save_note\", \"note_text\", \"note_title\", \"person_or_project\", \"due_date\", \"done_items\", \"approve_action_ids\"]}",
+          "schemaType": "manual"
+        }
+      },
+      {
+        "id": "b91532fc-72a2-4cbc-b760-90490567433c",
+        "name": "Plan Changes",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1840,
+          304
+        ],
+        "parameters": {
+          "jsCode": "const ctx = $('Build Context').first().json;\nconst o = ($input.first().json && $input.first().json.output) || {};\nconst clean = (v) => (v === undefined || v === null ? '' : String(v).trim());\nconst up = (v) => clean(v).toUpperCase();\nconst stamp = DateTime.now().setZone('America/Toronto').toFormat('yyyy-MM-dd HH:mm');\nconst exec = $execution.id;\nconst msg = ctx.message;\nconst activeIds = new Set(ctx.active_ids || []);\nconst openActions = new Set(ctx.open_action_ids || []);\n\n// Done items: only rows that really exist and are active\nconst seen = new Set();\nconst done = (o.done_items || [])\n  .filter(d => activeIds.has(up(d.ref_id)) && clean(d.item))\n  .filter(d => { const k = up(d.ref_id) + '|' + clean(d.item).toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; })\n  .slice(0, 5);\nconst doneRows = done.map((d, i) => ({\n  id: `D-${exec}-${i + 1}`, captured_at: stamp, type: 'done',\n  title: `Done: ${clean(d.item)}`.slice(0, 60), note: `Done: ${clean(d.item)} [${up(d.ref_id)}]`,\n  status: 'done', source: 'chat'\n}));\nconst closeRows = [...new Set(done.filter(d => d.closes_whole_row === true).map(d => up(d.ref_id)))]\n  .map(id => ({ id, status: 'done', last_updated: stamp }));\n\n// Approvals: deterministic match on the message text, plus the model's reading, limited to real open actions\nconst requested = new Set((o.approve_action_ids || []).map(up));\nif (/approv|go ahead|green ?light|yes,? (do|draft)/i.test(msg)) for (const m of (msg.match(/\\bA-\\d+\\b/gi) || [])) requested.add(up(m));\nconst approvals = [...requested].filter(id => openActions.has(id));\nconst unknownApprovals = [...requested].filter(id => !openActions.has(id));\n\n// New note\nlet saveNote = o.save_note === true && clean(o.note_text) !== '';\nconst fileCount = $('Normalize Note').first().json.file_count || 0;\nif (fileCount > 0) saveNote = false; // the message is the caption for the uploaded files\nif (!saveNote && !done.length && !requested.size && !fileCount && msg) saveNote = true; // never lose input\nconst noteText = clean(o.note_text) || msg;\nconst lowerMsg = msg.toLowerCase();\nconst person = clean(o.person_or_project);\nconst personOk = person && person.split(/\\s+/).every(w => lowerMsg.includes(w.toLowerCase().replace(/[^a-z0-9]/g, '')));\nlet due = clean(o.due_date);\nif (!/^\\d{4}-\\d{2}-\\d{2}$/.test(due) || !msg.includes(String(parseInt(due.slice(8, 10), 10)))) due = '';\nconst title = (clean(o.note_title) || noteText).replace(/\\s+/g, ' ');\nconst noteRow = {\n  id: `M-${exec}`, captured_at: stamp, type: 'note',\n  title: title.length > 60 ? title.slice(0, 57).trimEnd() + '...' : title,\n  note: noteText, person_or_project: personOk ? person : '', due_date: due, status: 'new', source: 'chat'\n};\n\nreturn [{ json: {\n  save_note: saveNote, note_row: noteRow,\n  done_rows: doneRows, close_rows: closeRows, approvals, unknown_approvals: unknownApprovals,\n  done_summary: done.map(d => ({ item: clean(d.item), ref: up(d.ref_id), closes: d.closes_whole_row === true })),\n  has_done: doneRows.length > 0, has_close: closeRows.length > 0, has_approvals: approvals.length > 0\n} }];\n",
+          "language": "javaScript",
+          "mode": "runOnceForAllItems"
+        }
+      },
+      {
+        "id": "58a7eda5-c076-4c65-964a-ff1855723bd7",
+        "name": "Save Note?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          2060,
+          304
+        ],
+        "parameters": {
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "Save Note?",
+                "leftValue": "={{ $json.save_note }}",
+                "operator": {
+                  "operation": "true",
+                  "singleValue": true,
+                  "type": "boolean"
+                },
+                "rightValue": ""
+              }
+            ],
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose"
+            }
+          }
+        }
+      },
+      {
+        "id": "59573f07-0b2a-48ac-8420-269cb9de2f0b",
+        "name": "Done Items?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          2500,
+          304
+        ],
+        "parameters": {
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "Done Items?",
+                "leftValue": "={{ $('Plan Changes').first().json.has_done }}",
+                "operator": {
+                  "operation": "true",
+                  "singleValue": true,
+                  "type": "boolean"
+                },
+                "rightValue": ""
+              }
+            ],
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose"
+            }
+          }
+        }
+      },
+      {
+        "id": "9de2ccf6-f60d-43e8-bc35-09136e564aa2",
+        "name": "Done Rows",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2720,
+          208
+        ],
+        "parameters": {
+          "jsCode": "return $('Plan Changes').first().json.done_rows.map(j => ({ json: j }));",
+          "language": "javaScript",
+          "mode": "runOnceForAllItems"
+        }
+      },
+      {
+        "id": "ad6ec927-a47a-44db-8cce-df2b322263a2",
+        "name": "Log Done Items",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          2940,
+          208
+        ],
+        "parameters": {
+          "authentication": "oAuth2",
+          "columns": {
+            "mappingMode": "defineBelow",
+            "schema": [
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "id",
+                "id": "id",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "captured_at",
+                "id": "captured_at",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "type",
+                "id": "type",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "title",
+                "id": "title",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "note",
+                "id": "note",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "person_or_project",
+                "id": "person_or_project",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "due_date",
+                "id": "due_date",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "status",
+                "id": "status",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "source",
+                "id": "source",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "file_url",
+                "id": "file_url",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "file_type",
+                "id": "file_type",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "short_summary",
+                "id": "short_summary",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "extraction_status",
+                "id": "extraction_status",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "updated_at",
+                "id": "updated_at",
+                "required": false,
+                "type": "string"
+              }
+            ],
+            "value": {
+              "captured_at": "={{ $json.captured_at }}",
+              "id": "={{ $json.id }}",
+              "note": "={{ $json.note }}",
+              "source": "={{ $json.source }}",
+              "status": "={{ $json.status }}",
+              "title": "={{ $json.title }}",
+              "type": "={{ $json.type }}"
+            }
+          },
+          "documentId": {
+            "__rl": true,
+            "cachedResultName": "Second Brain - Inbox",
+            "mode": "id",
+            "value": "1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4"
+          },
+          "operation": "append",
+          "options": {
+            "cellFormat": "RAW"
+          },
+          "resource": "sheet",
+          "sheetName": {
+            "__rl": true,
+            "cachedResultName": "Memory",
+            "mode": "list",
+            "value": 1001
+          }
+        },
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "wC9aB0ESSX2aJIA3",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "id": "418fba2b-65fc-4f8b-bd90-57d09dcbfe31",
+        "name": "Done Logged",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3160,
+          208
+        ],
+        "parameters": {
+          "jsCode": "return [{ json: { logged: $input.all().length } }];",
+          "language": "javaScript",
+          "mode": "runOnceForAllItems"
+        }
+      },
+      {
+        "id": "b9b8cecd-d090-4c68-aa3d-dae003dec7ac",
+        "name": "Close Rows?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          3380,
+          304
+        ],
+        "parameters": {
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "Close Rows?",
+                "leftValue": "={{ $('Plan Changes').first().json.has_close }}",
+                "operator": {
+                  "operation": "true",
+                  "singleValue": true,
+                  "type": "boolean"
+                },
+                "rightValue": ""
+              }
+            ],
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose"
+            }
+          }
+        }
+      },
+      {
+        "id": "145c4f70-6777-47df-90e6-d1496b5f3919",
+        "name": "Rows To Close",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          3600,
+          208
+        ],
+        "parameters": {
+          "jsCode": "return $('Plan Changes').first().json.close_rows.map(j => ({ json: j }));",
+          "language": "javaScript",
+          "mode": "runOnceForAllItems"
+        }
+      },
+      {
+        "id": "9388f4e0-9fc7-4832-b02d-421f8f7921eb",
+        "name": "Close Memory Rows",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          3820,
+          208
+        ],
+        "parameters": {
+          "authentication": "oAuth2",
+          "columns": {
+            "mappingMode": "defineBelow",
+            "matchingColumns": [
+              "id"
+            ],
+            "schema": [
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "id",
+                "id": "id",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "captured_at",
+                "id": "captured_at",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "type",
+                "id": "type",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "title",
+                "id": "title",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "note",
+                "id": "note",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "person_or_project",
+                "id": "person_or_project",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "due_date",
+                "id": "due_date",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "status",
+                "id": "status",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "source",
+                "id": "source",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "file_url",
+                "id": "file_url",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "file_type",
+                "id": "file_type",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "short_summary",
+                "id": "short_summary",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "extraction_status",
+                "id": "extraction_status",
+                "required": false,
+                "type": "string"
+              },
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "updated_at",
+                "id": "updated_at",
+                "required": false,
+                "type": "string"
+              }
+            ],
+            "value": {
+              "id": "={{ $json.id }}",
+              "status": "={{ $json.status }}",
+              "updated_at": "={{ $json.last_updated }}"
+            }
+          },
+          "documentId": {
+            "__rl": true,
+            "cachedResultName": "Second Brain - Inbox",
+            "mode": "id",
+            "value": "1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4"
+          },
+          "operation": "update",
+          "options": {
+            "cellFormat": "RAW"
+          },
+          "resource": "sheet",
+          "sheetName": {
+            "__rl": true,
+            "cachedResultName": "Memory",
+            "mode": "list",
+            "value": 1001
+          }
+        },
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "wC9aB0ESSX2aJIA3",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "id": "d51b40aa-6761-4b86-84e1-45b07fec22ec",
+        "name": "Rows Closed",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          4040,
+          208
+        ],
+        "parameters": {
+          "jsCode": "return [{ json: { closed: $input.all().length } }];",
+          "language": "javaScript",
+          "mode": "runOnceForAllItems"
+        }
+      },
+      {
+        "id": "1ef46af3-2c97-4f75-9b40-1820f60a741f",
+        "name": "Approvals?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          4260,
+          304
+        ],
+        "parameters": {
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "Approvals?",
+                "leftValue": "={{ $('Plan Changes').first().json.has_approvals }}",
+                "operator": {
+                  "operation": "true",
+                  "singleValue": true,
+                  "type": "boolean"
+                },
+                "rightValue": ""
+              }
+            ],
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose"
+            }
+          }
+        }
+      },
+      {
+        "id": "85a4224d-71f9-400d-9d21-bc31b186f3c9",
+        "name": "Approval Items",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          4480,
+          208
+        ],
+        "parameters": {
+          "jsCode": "return $('Plan Changes').first().json.approvals.map(id => ({ json: { action_id: id } }));",
+          "language": "javaScript",
+          "mode": "runOnceForAllItems"
+        }
+      },
+      {
+        "id": "2e990401-516e-4b1b-a2e7-7d0e3e4aec37",
+        "name": "Run Draft Builder",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.4,
+        "position": [
+          4700,
+          208
+        ],
+        "parameters": {
+          "mode": "each",
+          "options": {
+            "waitForSubWorkflow": true
+          },
+          "source": "database",
+          "workflowId": {
+            "__rl": true,
+            "cachedResultName": "Second Brain - Draft Builder",
+            "mode": "id",
+            "value": "H3oHiePTWHlV4nul"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "matchingColumns": [],
+            "schema": [
+              {
+                "canBeUsedToMatch": true,
+                "defaultMatch": false,
+                "display": true,
+                "displayName": "action_id",
+                "id": "action_id",
+                "required": false,
+                "type": "string"
+              }
+            ],
+            "value": {
+              "action_id": "={{ $json.action_id }}"
+            }
+          }
+        }
+      },
+      {
+        "id": "558b83fa-0be5-42a2-86fe-58cfc0e95966",
+        "name": "Reply",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          5800,
+          304
+        ],
+        "parameters": {
+          "jsCode": "const p = $('Plan Changes').first().json;\nlet files = [];\ntry { files = $('Run File Intake').all().map(i => i.json); } catch (e) { files = []; }\nlet drafts = [];\ntry { drafts = $('Run Draft Builder').all().map(i => i.json); } catch (e) { drafts = []; }\nconst lines = [];\nif (p.save_note) lines.push(`✅ **Saved ${p.note_row.id}:** ${p.note_row.title}`);\nfor (const d of p.done_summary) lines.push(`☑️ **Marked done:** ${d.item} [${d.ref}]${d.closes ? ` (all of ${d.ref} is now done)` : ''}`);\nfor (const r of drafts) {\n  if (r.ok && r.url) lines.push(`📄 **${r.action_id} draft ready:** [${r.title || 'Open draft'}](${r.url})`);\n  else if (r.url) lines.push(`📄 ${r.action_id} already has a draft: [open it](${r.url})`);\n  else lines.push(`⚠️ ${r.action_id}: ${r.message || 'could not create the draft'}`);\n}\nfor (const f of files) {\n  const icon = f.extraction_status === 'extracted' ? '📎' : '⚠️';\n  lines.push(`${icon} **Saved ${f.id}:** [${f.file_name}](${f.file_url}) (${f.file_type}) — ${f.short_summary}`);\n}\nconst expected = $('Normalize Note').first().json.file_count || 0;\nif (expected && files.length < expected) lines.push(`⚠️ ${expected - files.length} file(s) did not finish uploading.`);\nif (p.has_approvals && !drafts.length) lines.push('⚠️ The draft step did not return a result. Check the Draft Builder workflow.');\nfor (const id of p.unknown_approvals) lines.push(`⚠️ ${id} is not an open action, so nothing was created.`);\nif (!lines.length) lines.push('Nothing to save in that message.');\nlines.push('', '_Drafts only. Nothing was sent._');\nreturn [{ json: { output: lines.join('\\n') } }];\n",
+          "language": "javaScript",
+          "mode": "runOnceForAllItems"
+        }
+      },
+      {
+        "id": "7705ce8e-a1c7-4fbc-a88b-97993cf4c8cb",
+        "name": "Files?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          5140,
+          304
+        ],
+        "parameters": {
+          "conditions": {
+            "combinator": "and",
+            "conditions": [
+              {
+                "id": "f1",
+                "leftValue": "={{ ($('Normalize Note').first().json.file_count || 0) > 0 }}",
+                "operator": {
+                  "operation": "true",
+                  "singleValue": true,
+                  "type": "boolean"
+                },
+                "rightValue": ""
+              }
+            ],
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "loose"
+            }
+          }
+        }
+      },
+      {
+        "id": "a7501292-1c63-44c2-8ab7-f844e43a2903",
+        "name": "File Items",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          5360,
+          208
+        ],
+        "parameters": {
+          "jsCode": "const bin = $('Chat Input').first().binary || {};\nconst exec = $execution.id;\nconst caption = $('Normalize Note').first().json.note || '';\nreturn Object.keys(bin).map((k, i) => {\n  const b = bin[k];\n  const mime = b.mimeType || '';\n  const kind = mime === 'application/pdf' ? 'pdf' : (mime.startsWith('image/') ? 'image' : 'other');\n  return { json: { file_id: `F-${exec}-${i + 1}`, file_name: b.fileName || `upload-${i + 1}`, mime_type: mime, kind, caption }, binary: { data: b } };\n});",
+          "language": "javaScript",
+          "mode": "runOnceForAllItems"
+        }
+      },
+      {
+        "id": "308c9dbc-6f02-4015-a174-60177e05ede5",
+        "name": "Run File Intake",
+        "type": "n8n-nodes-base.executeWorkflow",
+        "typeVersion": 1.4,
+        "position": [
+          5580,
+          208
+        ],
+        "parameters": {
+          "mode": "each",
+          "options": {
+            "waitForSubWorkflow": true
+          },
+          "source": "database",
+          "workflowId": {
+            "__rl": true,
+            "cachedResultName": "Second Brain - File Intake",
+            "mode": "id",
+            "value": "jsapKL3nXu4Erf2l"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Chat Input": {
+        "main": [
+          [
+            {
+              "node": "Normalize Note",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalize Note": {
+        "main": [
+          [
+            {
+              "node": "Validate Note",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validate Note": {
+        "main": [
+          [
+            {
+              "node": "Read Memory Tab",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Reply Rejected",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Claude Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Interpret Message",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Message Format": {
+        "ai_outputParser": [
+          [
+            {
+              "node": "Interpret Message",
+              "type": "ai_outputParser",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read Memory Tab": {
+        "main": [
+          [
+            {
+              "node": "Read Actions Tab",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Read Actions Tab": {
+        "main": [
+          [
+            {
+              "node": "Build Context",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build Context": {
+        "main": [
+          [
+            {
+              "node": "Interpret Message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Interpret Message": {
+        "main": [
+          [
+            {
+              "node": "Plan Changes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Plan Changes": {
+        "main": [
+          [
+            {
+              "node": "Save Note?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Save Note?": {
+        "main": [
+          [
+            {
+              "node": "Append to Memory Tab",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Done Items?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Append to Memory Tab": {
+        "main": [
+          [
+            {
+              "node": "Done Items?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Done Items?": {
+        "main": [
+          [
+            {
+              "node": "Done Rows",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Close Rows?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Done Rows": {
+        "main": [
+          [
+            {
+              "node": "Log Done Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Log Done Items": {
+        "main": [
+          [
+            {
+              "node": "Done Logged",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Done Logged": {
+        "main": [
+          [
+            {
+              "node": "Close Rows?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Close Rows?": {
+        "main": [
+          [
+            {
+              "node": "Rows To Close",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Approvals?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Rows To Close": {
+        "main": [
+          [
+            {
+              "node": "Close Memory Rows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Close Memory Rows": {
+        "main": [
+          [
+            {
+              "node": "Rows Closed",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Rows Closed": {
+        "main": [
+          [
+            {
+              "node": "Approvals?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Approvals?": {
+        "main": [
+          [
+            {
+              "node": "Approval Items",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Files?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Approval Items": {
+        "main": [
+          [
+            {
+              "node": "Run Draft Builder",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Run Draft Builder": {
+        "main": [
+          [
+            {
+              "node": "Files?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Files?": {
+        "main": [
+          [
+            {
+              "node": "File Items",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Reply",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "File Items": {
+        "main": [
+          [
+            {
+              "node": "Run File Intake",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Run File Intake": {
+        "main": [
+          [
+            {
+              "node": "Reply",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [
+      {
+        "id": "a0839c5d-1320-4372-be1e-93d6380d2e51",
+        "name": "Understand message",
+        "nodeIds": [
+          "a009125b-6227-4867-9dc9-89cb60258e00",
+          "04ca13bc-9885-4d23-baa4-c9d5620669d9",
+          "2fedb743-9f35-4107-b4ee-e8b8118ef19d",
+          "91c30e46-1775-44b9-8482-c98aa6e89abf",
+          "f51064e8-163f-493f-b344-0f4248b1c66f",
+          "c429c075-f6ca-4fc9-893a-eb32367d7fdd",
+          "b91532fc-72a2-4cbc-b760-90490567433c"
+        ],
+        "description": "Claude reads the message against active rows and open actions; code keeps only real row and action ids."
+      },
+      {
+        "id": "9e9cedb0-db0d-4b00-b572-a652cf04ba73",
+        "name": "Log done items",
+        "nodeIds": [
+          "9de2ccf6-f60d-43e8-bc35-09136e564aa2",
+          "ad6ec927-a47a-44db-8cce-df2b322263a2",
+          "418fba2b-65fc-4f8b-bd90-57d09dcbfe31"
+        ],
+        "description": "Each finished item becomes a done log row in Memory linked to its source row."
+      },
+      {
+        "id": "cd60463d-ea89-49fc-bf06-174b9eef34bc",
+        "name": "Close finished rows",
+        "nodeIds": [
+          "145c4f70-6777-47df-90e6-d1496b5f3919",
+          "9388f4e0-9fc7-4832-b02d-421f8f7921eb",
+          "d51b40aa-6761-4b86-84e1-45b07fec22ec"
+        ],
+        "description": "Sets status to done only on rows where every commitment is finished."
+      },
+      {
+        "id": "40676cf4-1a84-4426-8586-92aaa10be0ef",
+        "name": "Run approvals",
+        "nodeIds": [
+          "85a4224d-71f9-400d-9d21-bc31b186f3c9",
+          "2e990401-516e-4b1b-a2e7-7d0e3e4aec37"
+        ],
+        "description": "Each approved action is sent to the Draft Builder, which creates a Google Doc and returns its link."
+      },
+      {
+        "id": "f08839b2-f8ca-4934-a2d3-a7aa6ebe0bca",
+        "name": "Save uploaded files",
+        "nodeIds": [
+          "a7501292-1c63-44c2-8ab7-f844e43a2903",
+          "308c9dbc-6f02-4015-a174-60177e05ede5"
+        ],
+        "description": "Each attached PDF or image goes to File Intake: original uploaded unchanged to Drive > Uploads, summarised, and logged in Memory."
+      }
+    ],
+    "authors": "Solomon Christ (via MCP)",
+    "name": "Chat file uploads to Drive Uploads",
+    "description": "Chat accepts PDFs and images. Each file goes to File Intake (original uploaded unchanged to Drive > Uploads, summarised, Memory row). Memory column last_updated renamed updated_at.",
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-10-30T18:06:34.093Z",
+        "id": 18,
+        "workflowId": "FpH15ftEdbGeXqbE",
+        "versionId": "7ae5162d-b69f-4b58-a1eb-b95c3409b1f2",
+        "event": "activated",
+        "userId": "e0156f3c-51e4-4ef4-a872-52e46316c9a6"
+      }
+    ]
+  },
+  "homeProject": {
+    "id": "8fXJFenOtN63a7Lj",
+    "type": "personal",
+    "name": "Solomon Christ <solomon@solomonchrist.com>",
+    "icon": null
+  },
+  "sharedWithProjects": [],
+  "usedCredentials": [],
+  "scopes": [
+    "execution:delete",
+    "execution:list",
+    "execution:read",
+    "execution:reveal",
+    "workflow:create",
+    "workflow:delete",
+    "workflow:disableRedaction",
+    "workflow:enableRedaction",
+    "workflow:execute",
+    "workflow:execute-chat",
+    "workflow:export",
+    "workflow:import",
+    "workflow:list",
+    "workflow:move",
+    "workflow:publish",
+    "workflow:read",
+    "workflow:share",
+    "workflow:unpublish",
+    "workflow:unshare",
+    "workflow:update"
+  ],
+  "checksum": "ce41286882a4d1900c795172ac4ea7e04eac3e90b3d5ac0016d7639b458014e7"
+}
