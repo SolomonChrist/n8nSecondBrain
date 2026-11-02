@@ -52,11 +52,18 @@ That is the complete initial setup. The Google Sheet serves as the memory and ac
 | [`workflows/Second Brain - Daily Report.json`](workflows/Second%20Brain%20-%20Daily%20Report.json) | n8n workflow for generating a daily report |
 | [`sheets/Second Brain - Inbox.xlsx`](sheets/Second%20Brain%20-%20Inbox.xlsx) | Spreadsheet to upload to Drive and convert into Google Sheets |
 | [`docs/user-profile.md`](docs/user-profile.md) | User profile to open or upload as a Google Doc |
-| [`sheets/second-brain-schema.csv`](sheets/second-brain-schema.csv) | Lightweight reference schema for the memory/action layer |
+
+### Finished versions
+
+The finished versions are also included for users who want the completed files shown in the video:
+
+- [`workflows-finished/Second Brain - Chat Input - FINISHED.json`](workflows-finished/Second%20Brain%20-%20Chat%20Input%20-%20FINISHED.json)
+- [`workflows-finished/Second Brain - Daily Report - FINISHED.json`](workflows-finished/Second%20Brain%20-%20Daily%20Report%20-%20FINISHED.json)
+- [`sheets-finished/Second Brain - Inbox - FINISHED.xlsx`](sheets-finished/Second%20Brain%20-%20Inbox%20-%20FINISHED.xlsx)
 
 ## 30-Day AI Second Brain Challenge
 
-The challenge graphic is included above as the visual for this project. Start with the two setup steps, then use the system consistently throughout the 30-day challenge. Additional instructions and the official YouTube walkthrough will be added here when they are finalized.
+The challenge graphic is included above as the visual for this project. The goal is simple: use the Second Brain consistently for the next 30 days and save **3 or more hours** during that period. Track the time saved as you capture ideas, manage actions, and use the daily report. Additional instructions and the official YouTube walkthrough will be added here when they are finalized.
 
 ## Sponsorship and affiliate disclosure
 

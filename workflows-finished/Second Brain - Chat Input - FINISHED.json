@@ -1,0 +1,1081 @@
+{
+  "name": "Second Brain - Chat",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "authentication": "n8nUserAuth",
+        "initialMessages": "Drop a note or a file into your Second Brain.",
+        "options": {
+          "allowFileUploads": true,
+          "allowedFilesMimeTypes": "application/pdf,image/*,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,text/plain,text/csv,text/markdown",
+          "inputPlaceholder": "Type a note or attach a file...",
+          "subtitle": "Capture a note",
+          "title": "Second Brain",
+          "responseMode": "lastNode"
+        }
+      },
+      "id": "c1ac82ff-5305-4e69-8e8b-577af26dd522",
+      "name": "Chat Input",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        448,
+        -32
+      ],
+      "webhookId": "b1309a34-136c-4376-bac6-9da2b3f4073e"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "n1",
+              "name": "note",
+              "type": "string",
+              "value": "={{ ($json.chatInput ?? \"\").toString().trim() }}"
+            },
+            {
+              "id": "n6",
+              "name": "id",
+              "type": "string",
+              "value": "=M-{{ $execution.id }}"
+            },
+            {
+              "id": "n2",
+              "name": "captured_at",
+              "type": "string",
+              "value": "={{ $now.setZone('America/Toronto').toFormat('yyyy-MM-dd HH:mm') }}"
+            },
+            {
+              "id": "n7",
+              "name": "type",
+              "type": "string",
+              "value": "note"
+            },
+            {
+              "id": "n8",
+              "name": "title",
+              "type": "string",
+              "value": "={{ (() => { const t = ($json.chatInput ?? '').toString().trim().replace(/\\s+/g, ' '); return t.length > 60 ? t.slice(0, 57).trimEnd() + '...' : t; })() }}"
+            },
+            {
+              "id": "n9",
+              "name": "status",
+              "type": "string",
+              "value": "new"
+            },
+            {
+              "id": "n10",
+              "name": "source",
+              "type": "string",
+              "value": "chat"
+            },
+            {
+              "id": "n3",
+              "name": "user_email",
+              "type": "string",
+              "value": "={{ $json.user?.email ?? $json.metadata?.user?.email ?? \"\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c8d65c7f-edd5-4a21-afb9-49152b878151",
+      "name": "Normalize Note",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "v1",
+              "leftValue": "={{ $json.note }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              },
+              "rightValue": ""
+            },
+            {
+              "id": "v2",
+              "leftValue": "={{ $json.note.length }}",
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              },
+              "rightValue": 4000
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2239ee3f-b935-4a4a-9f8c-e49beab1d611",
+      "name": "Validate Note",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1120,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1GX7eDosvIgUT6_mWMbVvTiFqpa9IEwIYR7TyvMNlFmU",
+          "mode": "list",
+          "cachedResultName": "Second Brain - Inbox",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GX7eDosvIgUT6_mWMbVvTiFqpa9IEwIYR7TyvMNlFmU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 724684166,
+          "mode": "list",
+          "cachedResultName": "Memory",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GX7eDosvIgUT6_mWMbVvTiFqpa9IEwIYR7TyvMNlFmU/edit#gid=724684166"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "captured_at": "={{ $json.captured_at }}",
+            "id": "={{ $json.id }}",
+            "note": "={{ $json.note }}",
+            "source": "={{ $json.source }}",
+            "status": "={{ $json.status }}",
+            "title": "={{ $json.title }}",
+            "type": "={{ $json.type }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "captured_at",
+              "displayName": "captured_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "note",
+              "displayName": "note",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "person_or_project",
+              "displayName": "person_or_project",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "due_date",
+              "displayName": "due_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "file_url",
+              "displayName": "file_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "file_type",
+              "displayName": "file_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "short_summary",
+              "displayName": "short_summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "extraction_status",
+              "displayName": "extraction_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "cellFormat": "RAW"
+        }
+      },
+      "id": "7d1e677f-1950-4516-a301-873ee72bdc83",
+      "name": "Append to Memory Tab",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1344,
+        -32
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vf0PkxxnMJgwheKI",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r1",
+              "name": "output",
+              "value": "=✅ Saved to your Second Brain at {{ $(\"Normalize Note\").item.json.captured_at }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "489ba0f2-fcd3-4d31-92eb-1962843e237d",
+      "name": "Reply Saved",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1568,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "x1",
+              "name": "output",
+              "value": "⚠️ Not saved — the note was empty or over 4,000 characters.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e0972dbe-5025-4626-82c5-4c99dae45264",
+      "name": "Reply Rejected",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1344,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Second Brain – Stage 1\nAuthenticated chat → validate → append row → confirm.\nSheet: Second Brain – Inbox",
+        "height": 144,
+        "width": 336,
+        "color": 4
+      },
+      "id": "ab78c73f-090b-491f-8ffa-f241e07c9676",
+      "name": "Sticky Note 6d58b414",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "f1",
+              "leftValue": "={{ Object.keys($binary || {}).length }}",
+              "operator": {
+                "operation": "gt",
+                "type": "number"
+              },
+              "rightValue": 0
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          }
+        },
+        "options": {}
+      },
+      "id": "d54ce0e4-6cdf-4324-a95b-566d3ee20c36",
+      "name": "Has Files?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// One output item per uploaded file, each with its binary under 'data'\nconst out = [];\n$input.all().forEach((item, idx) => {\n  const text = (item.json.chatInput ?? '').toString().trim();\n  const binary = item.binary || {};\n  for (const key of Object.keys(binary)) {\n    const b = binary[key];\n    out.push({\n      json: { file_name: b.fileName || key, file_type: b.mimeType || '', chat_text: text },\n      binary: { data: b },\n      pairedItem: { item: idx }\n    });\n  }\n});\nreturn out;"
+      },
+      "id": "aafe368e-1c66-4cc4-86e0-859bb1064d4c",
+      "name": "Split Files",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "name": "={{ $json.file_name }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1sQxfc_uAbVBkgqZIS_69850HWLyr4mHq"
+        },
+        "options": {
+          "simplifyOutput": false
+        }
+      },
+      "id": "ad99a9f5-dc7e-4e3c-936b-42c4b2bd5c37",
+      "name": "Upload to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1120,
+        -224
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "n13VHUtyTTc0Zg1n",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const files = $('Split Files').all();\nconst captured = DateTime.now().setZone('America/Toronto').toFormat('yyyy-MM-dd HH:mm');\nreturn $input.all().map((u, i) => {\n  const f = files[i].json;\n  return { json: {\n    id: `M-${$execution.id}-${i + 1}`,\n    captured_at: captured,\n    type: 'file',\n    title: f.file_name,\n    note: f.chat_text || `Uploaded file: ${f.file_name}`,\n    status: 'new',\n    source: 'chat',\n    file_url: u.json.webViewLink || '',\n    file_type: f.file_type\n  }, pairedItem: { item: i } };\n});"
+      },
+      "id": "f3ebc000-42fb-45b2-b39c-14db599e8f6c",
+      "name": "Build File Rows",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1GX7eDosvIgUT6_mWMbVvTiFqpa9IEwIYR7TyvMNlFmU"
+        },
+        "sheetName": {
+          "__rl": true,
+          "cachedResultName": "Memory",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GX7eDosvIgUT6_mWMbVvTiFqpa9IEwIYR7TyvMNlFmU/edit#gid=724684166",
+          "mode": "list",
+          "value": 724684166
+        },
+        "columns": {
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false,
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": true,
+              "display": true,
+              "displayName": "id",
+              "id": "id",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "captured_at",
+              "id": "captured_at",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "type",
+              "id": "type",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "title",
+              "id": "title",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "note",
+              "id": "note",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "status",
+              "id": "status",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "source",
+              "id": "source",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "file_url",
+              "id": "file_url",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "file_type",
+              "id": "file_type",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            }
+          ],
+          "value": {
+            "captured_at": "={{ $json.captured_at }}",
+            "file_type": "={{ $json.file_type }}",
+            "file_url": "={{ $json.file_url }}",
+            "id": "={{ $json.id }}",
+            "note": "={{ $json.note }}",
+            "source": "={{ $json.source }}",
+            "status": "={{ $json.status }}",
+            "title": "={{ $json.title }}",
+            "type": "={{ $json.type }}"
+          }
+        },
+        "options": {
+          "cellFormat": "RAW"
+        }
+      },
+      "id": "a74ae995-81cb-4704-b179-4c0ba2fdf29a",
+      "name": "Append File Rows",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1568,
+        -224
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vf0PkxxnMJgwheKI",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $('Build File Rows').all().map(r => r.json);\nconst lines = rows.map(r => r.file_url ? `- [${r.title}](${r.file_url})` : `- ${r.title}`).join('\\n');\nconst count = rows.length === 1 ? '1 file' : `${rows.length} files`;\nreturn [{ json: { output: `✅ Saved ${count} to Google Drive and your Second Brain:\\n${lines}` } }];"
+      },
+      "id": "08d3abfa-44c4-4f91-9b47-01ddd6c68b1a",
+      "name": "Reply File Saved",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1792,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "second-brain-capture-7f3a9c2e41d86b05",
+        "authentication": "headerAuth",
+        "responseMode": "lastNode",
+        "options": {
+          "onlyRunIf": "={{ ['website_capture', 'webhook_test_ping'].includes($json.body?.event) }}"
+        }
+      },
+      "id": "bf9ebcb9-ab8d-4218-bef3-ac5333d57670",
+      "name": "Chrome Capture Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        464
+      ],
+      "webhookId": "1abe9cd7-4780-4a8f-bd48-65236c1be57d",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "AiZzD2Xcisy3Csdl",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\n\n// Key check: a wrong or missing key stops the run, so nothing is written\nconst KEY = 'sbk_ecf766b55f189f7bb37b477d44772ffeda0c1f17114fe8d6';\nif ((input.headers || {})['x-second-brain-key'] !== KEY) {\n  throw new Error('Unauthorized: wrong or missing X-Second-Brain-Key header');\n}\n\nconst clean = (v) => (v === undefined || v === null ? '' : String(v).trim());\nconst body = input.body || {};\nif (body.event !== 'website_capture') return [{ json: { is_capture: false } }];\n\nconst page = body.page || {};\nconst meta = body.meta || {};\nconst og = body.openGraph || {};\nconst tags = Array.isArray(body.userTags) ? body.userTags.map(clean).filter(Boolean) : [];\nconst title = clean(page.title) || clean(og.title) || clean(page.url) || 'Untitled page';\n\n// Readable note: only what Solomon wrote or highlighted\nconst parts = [];\nif (clean(body.userNotes)) parts.push(clean(body.userNotes));\nif (clean(body.selectedText)) parts.push(`Highlighted: ${clean(body.selectedText)}`);\nif (tags.length) parts.push(`Tags: ${tags.join(', ')}`);\nconst note = parts.join('\\n\\n') || `Saved page: ${title}`;\n\n// Full payload for later review, kept under the 50,000 character cell limit\nlet raw = JSON.stringify(body);\nif (raw.length > 49000) {\n  const { structuredData, ...rest } = body;\n  raw = JSON.stringify({ ...rest, meta: { ...meta, allMetaTags: {} }, rawTruncated: true });\n  if (raw.length > 49000) raw = raw.slice(0, 49000);\n}\n\nreturn [{ json: {\n  is_capture: true,\n  id: `M-${$execution.id}`,\n  captured_at: DateTime.now().setZone('America/Toronto').toFormat('yyyy-MM-dd HH:mm'),\n  type: 'web',\n  title: title.slice(0, 200),\n  note,\n  status: 'new',\n  source: 'chrome',\n  file_url: clean(page.url),\n  file_type: 'webpage',\n  short_summary: (clean(meta.description) || clean(og.description)).slice(0, 500),\n  raw_json: raw\n} }];"
+      },
+      "id": "034cda1c-4f2d-472c-b5b1-d547de9df675",
+      "name": "Build Capture Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1GX7eDosvIgUT6_mWMbVvTiFqpa9IEwIYR7TyvMNlFmU"
+        },
+        "sheetName": {
+          "__rl": true,
+          "cachedResultName": "Memory",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GX7eDosvIgUT6_mWMbVvTiFqpa9IEwIYR7TyvMNlFmU/edit#gid=724684166",
+          "mode": "list",
+          "value": 724684166
+        },
+        "columns": {
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false,
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": true,
+              "display": true,
+              "displayName": "id",
+              "id": "id",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "captured_at",
+              "id": "captured_at",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "type",
+              "id": "type",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "title",
+              "id": "title",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "note",
+              "id": "note",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "status",
+              "id": "status",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "source",
+              "id": "source",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "file_url",
+              "id": "file_url",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "file_type",
+              "id": "file_type",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "short_summary",
+              "id": "short_summary",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            },
+            {
+              "canBeUsedToMatch": true,
+              "defaultMatch": false,
+              "display": true,
+              "displayName": "raw_json",
+              "id": "raw_json",
+              "removed": false,
+              "required": false,
+              "type": "string"
+            }
+          ],
+          "value": {
+            "captured_at": "={{ $json.captured_at }}",
+            "file_type": "={{ $json.file_type }}",
+            "file_url": "={{ $json.file_url }}",
+            "id": "={{ $json.id }}",
+            "note": "={{ $json.note }}",
+            "raw_json": "={{ $json.raw_json }}",
+            "short_summary": "={{ $json.short_summary }}",
+            "source": "={{ $json.source }}",
+            "status": "={{ $json.status }}",
+            "title": "={{ $json.title }}",
+            "type": "={{ $json.type }}"
+          }
+        },
+        "options": {
+          "cellFormat": "RAW"
+        }
+      },
+      "id": "a743c36c-8878-49fc-bdf8-45e1a5ed2a10",
+      "name": "Append Capture Row",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1120,
+        384
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Vf0PkxxnMJgwheKI",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const row = $('Build Capture Row').first().json;\nif (!row.is_capture) return [{ json: { ok: true, test: true } }];\nreturn [{ json: { ok: true, id: row.id, saved_to: 'Second Brain - Memory' } }];"
+      },
+      "id": "c2c15926-40d0-4f2a-a5da-9c17b5eacf76",
+      "name": "Capture Saved",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.is_capture }}",
+              "operator": {
+                "operation": "true",
+                "singleValue": true,
+                "type": "boolean"
+              },
+              "rightValue": ""
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          }
+        },
+        "options": {}
+      },
+      "id": "dad41ec3-bd60-4364-99e6-40464977daab",
+      "name": "Is Real Capture?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        464
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Normalize Note": {
+      "main": [
+        [
+          {
+            "node": "Validate Note",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Note": {
+      "main": [
+        [
+          {
+            "node": "Append to Memory Tab",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reply Rejected",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append to Memory Tab": {
+      "main": [
+        [
+          {
+            "node": "Reply Saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Input": {
+      "main": [
+        [
+          {
+            "node": "Has Files?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Files?": {
+      "main": [
+        [
+          {
+            "node": "Split Files",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Normalize Note",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Files": {
+      "main": [
+        [
+          {
+            "node": "Upload to Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Drive": {
+      "main": [
+        [
+          {
+            "node": "Build File Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build File Rows": {
+      "main": [
+        [
+          {
+            "node": "Append File Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append File Rows": {
+      "main": [
+        [
+          {
+            "node": "Reply File Saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chrome Capture Webhook": {
+      "main": [
+        [
+          {
+            "node": "Build Capture Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Capture Row": {
+      "main": [
+        [
+          {
+            "node": "Capture Saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Capture Row": {
+      "main": [
+        [
+          {
+            "node": "Is Real Capture?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Real Capture?": {
+      "main": [
+        [
+          {
+            "node": "Append Capture Row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Capture Saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": true
+  },
+  "versionId": "338b13ac-f45d-44e2-b23e-d4dc050f8cd9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp",
+    "instanceId": "e239e71cc33c24fa5360a33f577da9ea25748bfc425b6bdd1354cb6426fb2b0a"
+  },
+  "nodeGroups": [],
+  "id": "kFtrn3PCAUVafwl8",
+  "tags": []
+}
