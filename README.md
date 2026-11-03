@@ -52,6 +52,7 @@ That is the complete initial setup. The Google Sheet serves as the memory and ac
 | [`workflows/Second Brain - Daily Report.json`](workflows/Second%20Brain%20-%20Daily%20Report.json) | n8n workflow for generating a daily report |
 | [`sheets/Second Brain - Inbox.xlsx`](sheets/Second%20Brain%20-%20Inbox.xlsx) | Spreadsheet to upload to Drive and convert into Google Sheets |
 | [`docs/user-profile.md`](docs/user-profile.md) | User profile to open or upload as a Google Doc |
+| [`Second Brain Transfer Prompt.md`](Second%20Brain%20Transfer%20Prompt.md) | Reference material for the project; not part of the user setup steps |
 
 ### Finished versions
 
@@ -64,6 +65,10 @@ The finished versions are also included for users who want the completed files s
 ## 30-Day AI Second Brain Challenge
 
 The challenge graphic is included above as the visual for this project. The goal is simple: use the Second Brain consistently for the next 30 days and save **3 or more hours** during that period. Track the time saved as you capture ideas, manage actions, and use the daily report. Additional instructions and the official YouTube walkthrough will be added here when they are finalized.
+
+## Reference material
+
+[`Second Brain Transfer Prompt.md`](Second%20Brain%20Transfer%20Prompt.md) is included for reference and project context. It is not intended to be used by end users as part of the setup process.
 
 ## Sponsorship and affiliate disclosure
 
