@@ -66,7 +66,11 @@ The finished versions are also included for users who want the completed files s
 
 ## 30-Day AI Second Brain Challenge
 
-The challenge graphic is included above as the visual for this project. The goal is simple: use the Second Brain consistently for the next 30 days and save **3 or more hours** during that period. Track the time saved as you capture ideas, manage actions, and use the daily report. Additional instructions and the official YouTube walkthrough will be added here when they are finalized.
+After watching the video, go ahead and build out your very own Second Brain AI OS System. The goal is simple: use the Second Brain consistently for the next 30 days and save **3 or more hours** during that period. Track the time saved as you capture ideas, manage actions, and use your system daily.
+
+After 30 days and hitting success, don't just stop there! Repeat the process again for 6 months. Keep upgrading and updating the system and it will help you save REAL time! YOU GOT THIS!!
+
+Please share your results in the [n8n Community](http://community.n8n.io/) and make sure to tag `@solomonchrist` and share your amazing results with the world!!
 
 ## Reference material
 
