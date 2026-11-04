@@ -25,7 +25,7 @@ Open the [`workflows`](workflows/) folder and download the workflow JSON files:
 
 In n8n, import each JSON file using the workflow import option. After importing, connect your own credentials and configure the required Google Sheets, Claude, and other service connections shown in the workflow.
 
-Before activating a workflow, search its imported settings for the placeholder values beginning with `YOUR_` and replace them with your own details. In particular, configure `YOUR_EMAIL@example.com`, `YOUR_GOOGLE_SHEET_ID_HERE`, `YOUR_MEMORY_TAB_ID_HERE`, `YOUR_ACTIONS_TAB_ID_HERE`, `YOUR_N8N_CHAT_URL_HERE`, and `YOUR_SECOND_BRAIN_KEY_HERE` where applicable. The key should be a new private value stored in your n8n credential or secret-management setup.
+Before activating a workflow, search its imported settings for the placeholder values beginning with `YOUR_` and replace them with your own details. In particular, configure `YOUR@EMAIL.COM`, `YOUR_SHEET_ID`, `YOUR_MEMORY_TAB_ID`, `YOUR_ACTIONS_TAB_ID`, `YOUR_N8N_CHAT_URL`, and `YOUR_KEY` where applicable. The key should be a new private value stored in your n8n credential or secret-management setup.
 
 Do not share or commit credentials, API keys, or private document IDs. Configure those inside your own n8n instance.
 

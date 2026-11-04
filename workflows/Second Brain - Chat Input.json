@@ -142,13 +142,13 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "YOUR_GOOGLE_SHEET_ID_HERE",
+          "value": "YOUR_SHEET_ID",
           "mode": "id"
         },
         "sheetName": {
           "__rl": true,
           "cachedResultName": "Memory",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID_HERE/edit#gid=YOUR_MEMORY_TAB_ID_HERE",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=YOUR_MEMORY_TAB_ID",
           "mode": "list",
           "value": 1001
         },
@@ -560,13 +560,13 @@
           "operation": "append",
           "documentId": {
             "__rl": true,
-            "value": "YOUR_GOOGLE_SHEET_ID_HERE",
+            "value": "YOUR_SHEET_ID",
             "mode": "id"
           },
           "sheetName": {
             "__rl": true,
             "cachedResultName": "Memory",
-            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID_HERE/edit#gid=YOUR_MEMORY_TAB_ID_HERE",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=YOUR_MEMORY_TAB_ID",
             "mode": "list",
             "value": 1001
           },
@@ -786,7 +786,7 @@
             "__rl": true,
             "cachedResultName": "Second Brain - Inbox",
             "mode": "id",
-            "value": "YOUR_GOOGLE_SHEET_ID_HERE"
+            "value": "YOUR_SHEET_ID"
           },
           "operation": "read",
           "options": {
@@ -829,7 +829,7 @@
             "__rl": true,
             "cachedResultName": "Second Brain - Inbox",
             "mode": "id",
-            "value": "YOUR_GOOGLE_SHEET_ID_HERE"
+            "value": "YOUR_SHEET_ID"
           },
           "operation": "read",
           "options": {
@@ -1189,7 +1189,7 @@
             "__rl": true,
             "cachedResultName": "Second Brain - Inbox",
             "mode": "id",
-            "value": "YOUR_GOOGLE_SHEET_ID_HERE"
+            "value": "YOUR_SHEET_ID"
           },
           "operation": "append",
           "options": {
@@ -1426,7 +1426,7 @@
             "__rl": true,
             "cachedResultName": "Second Brain - Inbox",
             "mode": "id",
-            "value": "YOUR_GOOGLE_SHEET_ID_HERE"
+            "value": "YOUR_SHEET_ID"
           },
           "operation": "update",
           "options": {
@@ -2020,7 +2020,7 @@
         "description": "Each attached PDF or image goes to File Intake: original uploaded unchanged to Drive > Uploads, summarised, and logged in Memory."
       }
     ],
-    "authors": "Your Name",
+    "authors": "YOUR_NAME",
     "name": "Chat file uploads to Drive Uploads",
     "description": "Chat accepts PDFs and images. Each file goes to File Intake (original uploaded unchanged to Drive > Uploads, summarised, Memory row). Memory column last_updated renamed updated_at.",
     "autosaved": false,
@@ -2038,7 +2038,7 @@
   "homeProject": {
     "id": "8fXJFenOtN63a7Lj",
     "type": "personal",
-    "name": "Your Name <YOUR_EMAIL@example.com>",
+    "name": "YOUR_NAME <YOUR@EMAIL.COM>",
     "icon": null
   },
   "sharedWithProjects": [],
