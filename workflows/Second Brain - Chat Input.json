@@ -142,13 +142,13 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4",
+          "value": "YOUR_GOOGLE_SHEET_ID_HERE",
           "mode": "id"
         },
         "sheetName": {
           "__rl": true,
           "cachedResultName": "Memory",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4/edit#gid=1001",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID_HERE/edit#gid=YOUR_MEMORY_TAB_ID_HERE",
           "mode": "list",
           "value": 1001
         },
@@ -279,7 +279,7 @@
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "wC9aB0ESSX2aJIA3",
+          "id": null,
           "name": "Google Sheets account"
         }
       }
@@ -560,13 +560,13 @@
           "operation": "append",
           "documentId": {
             "__rl": true,
-            "value": "1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4",
+            "value": "YOUR_GOOGLE_SHEET_ID_HERE",
             "mode": "id"
           },
           "sheetName": {
             "__rl": true,
             "cachedResultName": "Memory",
-            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4/edit#gid=1001",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID_HERE/edit#gid=YOUR_MEMORY_TAB_ID_HERE",
             "mode": "list",
             "value": 1001
           },
@@ -727,7 +727,7 @@
         ],
         "credentials": {
           "googleSheetsOAuth2Api": {
-            "id": "wC9aB0ESSX2aJIA3",
+            "id": null,
             "name": "Google Sheets account"
           }
         }
@@ -786,7 +786,7 @@
             "__rl": true,
             "cachedResultName": "Second Brain - Inbox",
             "mode": "id",
-            "value": "1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4"
+            "value": "YOUR_GOOGLE_SHEET_ID_HERE"
           },
           "operation": "read",
           "options": {
@@ -807,7 +807,7 @@
         },
         "credentials": {
           "googleSheetsOAuth2Api": {
-            "id": "wC9aB0ESSX2aJIA3",
+            "id": null,
             "name": "Google Sheets account"
           }
         },
@@ -829,7 +829,7 @@
             "__rl": true,
             "cachedResultName": "Second Brain - Inbox",
             "mode": "id",
-            "value": "1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4"
+            "value": "YOUR_GOOGLE_SHEET_ID_HERE"
           },
           "operation": "read",
           "options": {
@@ -850,7 +850,7 @@
         },
         "credentials": {
           "googleSheetsOAuth2Api": {
-            "id": "wC9aB0ESSX2aJIA3",
+            "id": null,
             "name": "Google Sheets account"
           }
         },
@@ -886,7 +886,7 @@
           "messages": {
             "messageValues": [
               {
-                "message": "You read one chat message Solomon sends to his Second Brain and decide what it means. You only classify; you never perform actions or send anything.\n\nReturn:\n- save_note: true if the message contains new information worth keeping (a task, idea, commitment, fact). False if it only reports something done and/or approves actions.\n- note_text: only the new information, in his own words, lightly trimmed. Empty string if save_note is false.\n- note_title: at most 8 words summarising note_text. Empty if save_note is false.\n- person_or_project: a person or project explicitly named in the new information, else \"\".\n- due_date: YYYY-MM-DD only if the message states an explicit calendar date. Never convert weekdays or \"tomorrow\". Else \"\".\n- done_items: things he says are finished, completed, sent, handled or no longer needed. Match each to the ACTIVE ROW it belongs to (ref_id, e.g. M-8). item = the specific finished commitment in a few words. closes_whole_row = true only if, after this, every commitment in that row is finished, counting the row's \"already done\" lines. If you cannot match a finished item to a row confidently, leave it out.\n- approve_action_ids: action ids he approves (e.g. \"approve A-2\", \"go ahead with A-2\"). Only ids listed in EXISTING ACTIONS.\n\nNever invent row ids, action ids, people or dates.",
+                "message": "You read one chat message the user sends to his Second Brain and decide what it means. You only classify; you never perform actions or send anything.\n\nReturn:\n- save_note: true if the message contains new information worth keeping (a task, idea, commitment, fact). False if it only reports something done and/or approves actions.\n- note_text: only the new information, in his own words, lightly trimmed. Empty string if save_note is false.\n- note_title: at most 8 words summarising note_text. Empty if save_note is false.\n- person_or_project: a person or project explicitly named in the new information, else \"\".\n- due_date: YYYY-MM-DD only if the message states an explicit calendar date. Never convert weekdays or \"tomorrow\". Else \"\".\n- done_items: things he says are finished, completed, sent, handled or no longer needed. Match each to the ACTIVE ROW it belongs to (ref_id, e.g. M-8). item = the specific finished commitment in a few words. closes_whole_row = true only if, after this, every commitment in that row is finished, counting the row's \"already done\" lines. If you cannot match a finished item to a row confidently, leave it out.\n- approve_action_ids: action ids he approves (e.g. \"approve A-2\", \"go ahead with A-2\"). Only ids listed in EXISTING ACTIONS.\n\nNever invent row ids, action ids, people or dates.",
                 "type": "SystemMessagePromptTemplate"
               }
             ]
@@ -1189,7 +1189,7 @@
             "__rl": true,
             "cachedResultName": "Second Brain - Inbox",
             "mode": "id",
-            "value": "1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4"
+            "value": "YOUR_GOOGLE_SHEET_ID_HERE"
           },
           "operation": "append",
           "options": {
@@ -1205,7 +1205,7 @@
         },
         "credentials": {
           "googleSheetsOAuth2Api": {
-            "id": "wC9aB0ESSX2aJIA3",
+            "id": null,
             "name": "Google Sheets account"
           }
         }
@@ -1426,7 +1426,7 @@
             "__rl": true,
             "cachedResultName": "Second Brain - Inbox",
             "mode": "id",
-            "value": "1XHWMGIZ0IkWoaBEgiwX3-oQYQqqyiJI12l-Rt4K-iy4"
+            "value": "YOUR_GOOGLE_SHEET_ID_HERE"
           },
           "operation": "update",
           "options": {
@@ -1442,7 +1442,7 @@
         },
         "credentials": {
           "googleSheetsOAuth2Api": {
-            "id": "wC9aB0ESSX2aJIA3",
+            "id": null,
             "name": "Google Sheets account"
           }
         }
@@ -2020,7 +2020,7 @@
         "description": "Each attached PDF or image goes to File Intake: original uploaded unchanged to Drive > Uploads, summarised, and logged in Memory."
       }
     ],
-    "authors": "Solomon Christ (via MCP)",
+    "authors": "Your Name",
     "name": "Chat file uploads to Drive Uploads",
     "description": "Chat accepts PDFs and images. Each file goes to File Intake (original uploaded unchanged to Drive > Uploads, summarised, Memory row). Memory column last_updated renamed updated_at.",
     "autosaved": false,
@@ -2038,7 +2038,7 @@
   "homeProject": {
     "id": "8fXJFenOtN63a7Lj",
     "type": "personal",
-    "name": "Solomon Christ <solomon@solomonchrist.com>",
+    "name": "Your Name <YOUR_EMAIL@example.com>",
     "icon": null
   },
   "sharedWithProjects": [],

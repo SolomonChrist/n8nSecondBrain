@@ -138,17 +138,17 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1GX7eDosvIgUT6_mWMbVvTiFqpa9IEwIYR7TyvMNlFmU",
+          "value": "YOUR_GOOGLE_SHEET_ID_HERE",
           "mode": "list",
           "cachedResultName": "Second Brain - Inbox",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GX7eDosvIgUT6_mWMbVvTiFqpa9IEwIYR7TyvMNlFmU/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID_HERE/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 724684166,
           "mode": "list",
           "cachedResultName": "Memory",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GX7eDosvIgUT6_mWMbVvTiFqpa9IEwIYR7TyvMNlFmU/edit#gid=724684166"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID_HERE/edit#gid=YOUR_MEMORY_TAB_ID_HERE"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -323,7 +323,7 @@
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "Vf0PkxxnMJgwheKI",
+          "id": null,
           "name": "Google Sheets account"
         }
       }
@@ -463,7 +463,7 @@
       ],
       "credentials": {
         "googleDriveOAuth2Api": {
-          "id": "n13VHUtyTTc0Zg1n",
+          "id": null,
           "name": "Google Drive account"
         }
       }
@@ -487,12 +487,12 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1GX7eDosvIgUT6_mWMbVvTiFqpa9IEwIYR7TyvMNlFmU"
+          "value": "YOUR_GOOGLE_SHEET_ID_HERE"
         },
         "sheetName": {
           "__rl": true,
           "cachedResultName": "Memory",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GX7eDosvIgUT6_mWMbVvTiFqpa9IEwIYR7TyvMNlFmU/edit#gid=724684166",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID_HERE/edit#gid=YOUR_MEMORY_TAB_ID_HERE",
           "mode": "list",
           "value": 724684166
         },
@@ -621,7 +621,7 @@
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "Vf0PkxxnMJgwheKI",
+          "id": null,
           "name": "Google Sheets account"
         }
       }
@@ -660,14 +660,14 @@
       "webhookId": "1abe9cd7-4780-4a8f-bd48-65236c1be57d",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "AiZzD2Xcisy3Csdl",
+          "id": null,
           "name": "Header Auth account"
         }
       }
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.first().json;\n\n// Key check: a wrong or missing key stops the run, so nothing is written\nconst KEY = 'sbk_ecf766b55f189f7bb37b477d44772ffeda0c1f17114fe8d6';\nif ((input.headers || {})['x-second-brain-key'] !== KEY) {\n  throw new Error('Unauthorized: wrong or missing X-Second-Brain-Key header');\n}\n\nconst clean = (v) => (v === undefined || v === null ? '' : String(v).trim());\nconst body = input.body || {};\nif (body.event !== 'website_capture') return [{ json: { is_capture: false } }];\n\nconst page = body.page || {};\nconst meta = body.meta || {};\nconst og = body.openGraph || {};\nconst tags = Array.isArray(body.userTags) ? body.userTags.map(clean).filter(Boolean) : [];\nconst title = clean(page.title) || clean(og.title) || clean(page.url) || 'Untitled page';\n\n// Readable note: only what Solomon wrote or highlighted\nconst parts = [];\nif (clean(body.userNotes)) parts.push(clean(body.userNotes));\nif (clean(body.selectedText)) parts.push(`Highlighted: ${clean(body.selectedText)}`);\nif (tags.length) parts.push(`Tags: ${tags.join(', ')}`);\nconst note = parts.join('\\n\\n') || `Saved page: ${title}`;\n\n// Full payload for later review, kept under the 50,000 character cell limit\nlet raw = JSON.stringify(body);\nif (raw.length > 49000) {\n  const { structuredData, ...rest } = body;\n  raw = JSON.stringify({ ...rest, meta: { ...meta, allMetaTags: {} }, rawTruncated: true });\n  if (raw.length > 49000) raw = raw.slice(0, 49000);\n}\n\nreturn [{ json: {\n  is_capture: true,\n  id: `M-${$execution.id}`,\n  captured_at: DateTime.now().setZone('America/Toronto').toFormat('yyyy-MM-dd HH:mm'),\n  type: 'web',\n  title: title.slice(0, 200),\n  note,\n  status: 'new',\n  source: 'chrome',\n  file_url: clean(page.url),\n  file_type: 'webpage',\n  short_summary: (clean(meta.description) || clean(og.description)).slice(0, 500),\n  raw_json: raw\n} }];"
+        "jsCode": "const input = $input.first().json;\n\n// Key check: a wrong or missing key stops the run, so nothing is written\nconst KEY = 'YOUR_SECOND_BRAIN_KEY_HERE';\nif ((input.headers || {})['x-second-brain-key'] !== KEY) {\n  throw new Error('Unauthorized: wrong or missing X-Second-Brain-Key header');\n}\n\nconst clean = (v) => (v === undefined || v === null ? '' : String(v).trim());\nconst body = input.body || {};\nif (body.event !== 'website_capture') return [{ json: { is_capture: false } }];\n\nconst page = body.page || {};\nconst meta = body.meta || {};\nconst og = body.openGraph || {};\nconst tags = Array.isArray(body.userTags) ? body.userTags.map(clean).filter(Boolean) : [];\nconst title = clean(page.title) || clean(og.title) || clean(page.url) || 'Untitled page';\n\n// Readable note: only what the user wrote or highlighted\nconst parts = [];\nif (clean(body.userNotes)) parts.push(clean(body.userNotes));\nif (clean(body.selectedText)) parts.push(`Highlighted: ${clean(body.selectedText)}`);\nif (tags.length) parts.push(`Tags: ${tags.join(', ')}`);\nconst note = parts.join('\\n\\n') || `Saved page: ${title}`;\n\n// Full payload for later review, kept under the 50,000 character cell limit\nlet raw = JSON.stringify(body);\nif (raw.length > 49000) {\n  const { structuredData, ...rest } = body;\n  raw = JSON.stringify({ ...rest, meta: { ...meta, allMetaTags: {} }, rawTruncated: true });\n  if (raw.length > 49000) raw = raw.slice(0, 49000);\n}\n\nreturn [{ json: {\n  is_capture: true,\n  id: `M-${$execution.id}`,\n  captured_at: DateTime.now().setZone('America/Toronto').toFormat('yyyy-MM-dd HH:mm'),\n  type: 'web',\n  title: title.slice(0, 200),\n  note,\n  status: 'new',\n  source: 'chrome',\n  file_url: clean(page.url),\n  file_type: 'webpage',\n  short_summary: (clean(meta.description) || clean(og.description)).slice(0, 500),\n  raw_json: raw\n} }];"
       },
       "id": "034cda1c-4f2d-472c-b5b1-d547de9df675",
       "name": "Build Capture Row",
@@ -684,12 +684,12 @@
         "documentId": {
           "__rl": true,
           "mode": "id",
-          "value": "1GX7eDosvIgUT6_mWMbVvTiFqpa9IEwIYR7TyvMNlFmU"
+          "value": "YOUR_GOOGLE_SHEET_ID_HERE"
         },
         "sheetName": {
           "__rl": true,
           "cachedResultName": "Memory",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1GX7eDosvIgUT6_mWMbVvTiFqpa9IEwIYR7TyvMNlFmU/edit#gid=724684166",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_GOOGLE_SHEET_ID_HERE/edit#gid=YOUR_MEMORY_TAB_ID_HERE",
           "mode": "list",
           "value": 724684166
         },
@@ -840,7 +840,7 @@
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "Vf0PkxxnMJgwheKI",
+          "id": null,
           "name": "Google Sheets account"
         }
       }
